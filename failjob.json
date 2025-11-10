@@ -1,0 +1,4 @@
+{
+  "id": "fail1",
+  "command": "exit 3"
+}
