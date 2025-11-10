@@ -7,7 +7,7 @@ from config import Config, DB_PATH
 
 STOP_FILE = os.path.join(os.path.dirname(DB_PATH), "workers.stop")
 
-# ---------- Worker registration helpers ---------- #
+
 
 def register_worker(pid: int, name: str):
     conn = _get_conn()
@@ -44,7 +44,7 @@ def unregister_worker(pid: int):
     finally:
         conn.close()
 
-# ---------- Worker loop ---------- #
+
 
 def worker_loop():
     q = JobQueue()
@@ -58,7 +58,7 @@ def worker_loop():
 
     try:
         while True:
-            # Check for stop signal (graceful)
+           
             if os.path.exists(STOP_FILE):
                 break
 
@@ -99,14 +99,14 @@ def worker_loop():
     finally:
         unregister_worker(pid)
 
-# ---------- Manager ---------- #
+
 
 class WorkerManager:
     def __init__(self):
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
     def start_workers(self, count: int):
-        # clear previous stop signal
+       
         if os.path.exists(STOP_FILE):
             os.remove(STOP_FILE)
 
@@ -117,17 +117,17 @@ class WorkerManager:
             p.start()
             procs.append(p)
 
-        # Run in foreground; in real-world use, you'd daemonize or use a supervisor.
+        
         try:
             for p in procs:
                 p.join()
         except KeyboardInterrupt:
-            # Ctrl+C triggers graceful stop
+            
             self.stop_workers()
             for p in procs:
                 p.join()
 
     def stop_workers(self):
-        # Workers poll this file and exit after finishing current loop/job.
+       
         with open(STOP_FILE, "w", encoding="utf-8") as f:
             f.write("stop")

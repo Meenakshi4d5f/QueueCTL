@@ -53,7 +53,7 @@ class JobQueue:
         init_db()
         self.cfg = Config()
 
-    # ---------------- Enqueue ---------------- #
+    
 
     def enqueue(self, job_payload: dict) -> dict:
         now = utcnow()
@@ -104,8 +104,6 @@ class JobQueue:
 
         return job
 
-    # ---------------- Reservation (for workers) ---------------- #
-
     def reserve_job(self):
         """
         Atomically pick a runnable job and mark it as 'processing'.
@@ -116,7 +114,7 @@ class JobQueue:
         conn = _get_conn()
         try:
             with conn:
-                # Claim one job if available
+               
                 cur = conn.execute(
                     """
                     UPDATE jobs
@@ -137,7 +135,6 @@ class JobQueue:
                 if cur.rowcount == 0:
                     return None
 
-                # Fetch the job we just updated
                 row = conn.execute(
                     """
                     SELECT *
@@ -157,7 +154,7 @@ class JobQueue:
         finally:
             conn.close()
 
-    # ---------------- State transitions ---------------- #
+ 
 
     def mark_completed(self, job_id: str):
         conn = _get_conn()
@@ -187,7 +184,7 @@ class JobQueue:
         attempts += 1
 
         if attempts > max_retries:
-            # DLQ
+           
             new_state = "dead"
             next_run_at = iso(now)
         else:
@@ -220,7 +217,7 @@ class JobQueue:
         finally:
             conn.close()
 
-    # ---------------- Query helpers ---------------- #
+   
 
     def list_jobs(self, state: str | None = None):
         conn = _get_conn()
@@ -254,7 +251,7 @@ class JobQueue:
                 ).fetchone()["c"]
                 job_counts[st] = c
 
-            # active workers = heartbeats in last 10s
+         
             cutoff = iso(utcnow() - timedelta(seconds=10))
             w = conn.execute(
                 """
@@ -272,7 +269,7 @@ class JobQueue:
         finally:
             conn.close()
 
-    # ---------------- DLQ ---------------- #
+  
 
     def retry_dead_job(self, job_id: str):
         now_str = iso(utcnow())

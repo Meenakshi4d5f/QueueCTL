@@ -12,14 +12,14 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command")
 
-    # ---------- enqueue ---------- #
+ 
     enqueue_p = subparsers.add_parser("enqueue", help="Enqueue a new job from JSON")
     enqueue_p.add_argument(
         "job_json",
         help="Job JSON string or @/path/to/file.json",
     )
 
-    # ---------- worker ---------- #
+    
     worker_p = subparsers.add_parser("worker", help="Worker management")
     worker_sub = worker_p.add_subparsers(dest="worker_cmd")
 
@@ -33,10 +33,10 @@ def main():
 
     worker_sub.add_parser("stop", help="Stop running workers gracefully")
 
-    # ---------- status ---------- #
+   
     subparsers.add_parser("status", help="Show job & worker status summary")
 
-    # ---------- list ---------- #
+   
     list_p = subparsers.add_parser("list", help="List jobs")
     list_p.add_argument(
         "--state",
@@ -44,7 +44,7 @@ def main():
         help="Filter jobs by state",
     )
 
-    # ---------- dlq ---------- #
+   
     dlq_p = subparsers.add_parser("dlq", help="Dead Letter Queue operations")
     dlq_sub = dlq_p.add_subparsers(dest="dlq_cmd")
 
@@ -53,7 +53,7 @@ def main():
     dlq_retry = dlq_sub.add_parser("retry", help="Retry a DLQ job by id")
     dlq_retry.add_argument("job_id")
 
-    # ---------- config ---------- #
+   
     config_p = subparsers.add_parser("config", help="Config management")
     config_sub = config_p.add_subparsers(dest="config_cmd")
 
@@ -66,14 +66,14 @@ def main():
 
     args = parser.parse_args()
 
-    # Shared helpers
+    
     q = JobQueue()
     cfg = Config()
 
-    # ---------- dispatch ---------- #
+  
 
     if args.command == "enqueue":
-        # Inline JSON or @file.json
+        
         if args.job_json.startswith("@"):
             with open(args.job_json[1:], "r", encoding="utf-8") as f:
                 payload = json.load(f)
