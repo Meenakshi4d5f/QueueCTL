@@ -136,3 +136,4 @@ job_queue.py — defines the database, job states, and lifecycle methods.
 worker.py — manages worker processes and job execution logic.
 
 config.py — stores and retrieves global configuration.
+video link:https://drive.google.com/file/d/1TJ2fWGEsnLzIZhst4NXlwalPCFLx0wiu/view?usp=drivesdk
